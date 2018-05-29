@@ -90,9 +90,6 @@ string Keys::sign(string str) {
     return buffer64;
 }
 
-//gcry_sexp_t Keys::getPublicKey() { return mPublicKey; }
-//gcry_sexp_t Keys::getPrivateKey() { return mPrivateKey; }
-
 // return value needs to be free()d
 char *Keys::sexpToBinary(gcry_sexp_t sexp, int *length) {
 
@@ -168,7 +165,6 @@ string Keys::encrypt(string plainText) {
     gcry_mpi_release(plainTextMpi);
     gcry_sexp_release(plainTextSexp);
     gcry_sexp_release(cipherTextSexp);
-
     return retString;
 }
 
@@ -186,11 +182,7 @@ string Keys::decrypt(string cipherText) {
     gcry_mpi_t outMpi = gcry_sexp_nth_mpi(plainTextSexp, 0, GCRYMPI_FMT_USG);
 
     char *plainBuf = (char *)calloc(1, length);
-
     gcry_mpi_print(GCRYMPI_FMT_USG, (unsigned char *)plainBuf, length, NULL, outMpi);
-
-    if (strcmp(plainBuf, "hello world!") == 0)
-        qInfo("decrypted result was the same as plaintext input.");
 
     string retString(plainBuf);
     gcry_mpi_release(outMpi);
@@ -209,9 +201,13 @@ bool Keys::existOnDisk() {
 
 void Keys::createAesContext(gcry_cipher_hd_t *aesHd, QString *qStringPassword) {
 
+    // i think the following if statement might be for testing but i don't
+    // want to risk breaking something by deleting it. there is a
+    // corresponding test at the end of the function that goes with it.
     if (qStringPassword == nullptr)
-        qStringPassword = new QString("abc123derpherp2949"); // for testing? forgot...
+        qStringPassword = new QString("abc123derpherp2949");
 
+    // hardcoded. not ideal but i'm lazy and its fine as long as I'm the only user.
     const char *HASH_SALT = "7b79158d01f032h0ff5a2238ca7d03e4891c5f93c21bfcd09cc7cbafd1c6ff98";
     const int AES_KEY_SIZE_BYTES = 16;
     char passwordHash[AES_KEY_SIZE_BYTES];
@@ -229,6 +225,7 @@ void Keys::createAesContext(gcry_cipher_hd_t *aesHd, QString *qStringPassword) {
     if (gcry_cipher_setiv(*aesHd, &passwordHash, AES_KEY_SIZE_BYTES))
         throw AesContextException();
 
+    // this goes with the if statement at beginning of function..
     if (qStringPassword == QString("abc123derpherp2949"))
         delete qStringPassword;
 

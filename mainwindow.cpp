@@ -21,18 +21,6 @@ void MainWindow::setKeys(Keys *keys) {
     mKeys = keys;
 }
 
-
-
-
-void MainWindow::cryptTest() {
-
-    qInfo() << "begin test";
-    mKeys->init(QString("ddd"));
-
-    string crypted = mKeys->encrypt(string("hello world!"));
-    string decrypted = mKeys->decrypt(crypted);
-}
-
 Keys *MainWindow::getKeys() {
     return mKeys;
 }
@@ -138,7 +126,6 @@ void MainWindow::onKeyReceived() {
     mState = STATE_IDLE;
 }
 
-
 void MainWindow::onNewSalt(string salt) {
 
     mSalt = salt;
@@ -228,7 +215,6 @@ void MainWindow::closeEvent (QCloseEvent *event) {
     mUi.plainTextEdit->document()->clearUndoRedoStacks();
     mUi.stackedWidget->setCurrentIndex(0);
     mUi.passwordLineEdit->clear();
-    mUi.hostLineEdit->clear();
     event->accept();
 }
 
@@ -238,6 +224,4 @@ void MainWindow::showEvent( QShowEvent* event ) {
     mUi.labelError->setText(QString(""));
     QWidget::showEvent( event );
     mUi.passwordLineEdit->setFocus();
-    cryptTest();
-
 }
