@@ -1,6 +1,4 @@
 # QryptNote
-Qt app to encrypt notes and upload them to an ssh server
+Qt app to encrypt notes and upload them to a CGI script.
 
-Still working on it. Come back later.
-
-GPL3
+A quick video and description are at http://m3.sdf.org/pages/qryptnote/
